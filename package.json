@@ -1,0 +1,24 @@
+{
+  "name": "draw2",
+  "version": "1.0.0",
+  "description": "A collaborative drawing application",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avikj/draw2.git"
+  },
+  "keywords": [
+    "drawing",
+    "draw",
+    "collaborative"
+  ],
+  "author": "Avik Jain <avikjain.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/avikj/draw2/issues"
+  },
+  "homepage": "https://github.com/avikj/draw2#readme"
+}
