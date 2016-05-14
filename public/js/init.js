@@ -5,17 +5,22 @@ $(document).ready(function(){
   canvas.height = window.innerHeight;
   var ctx = canvas.getContext("2d");
 
+  var color = '#000000';
+
   var mouseIsDown = false;
 
-  socket.on('circle', function(coords){
-    drawCircle(coords);
+  socket.on('circle', function(data){
+    drawCircle(data);
+  });
+  socket.on('setColor', function(newColor){
+    color = newColor;
   });
 
   canvas.addEventListener('mousedown', function(event){
-    var fixedCoords = fixCoords(event);
-    socket.emit('circle', fixedCoords);
+    var circleData = getCircleData(event);
+    socket.emit('circle', circleData);
     mouseIsDown = true;
-    drawCircle(fixedCoords);
+    drawCircle(circleData);
   });
 
   canvas.addEventListener('mouseup', function(event){
@@ -24,13 +29,13 @@ $(document).ready(function(){
 
   canvas.addEventListener('mousemove', function(event){
     if(mouseIsDown){
-      var fixedCoords = fixCoords(event);
-      socket.emit('circle', fixedCoords);
-      drawCircle(fixedCoords);
+      var circleData = getCircleData(event);
+      socket.emit('circle', circleData);
+      drawCircle(circleData);
     }
   });
 
-  function fixCoords(e){
+  function getCircleData(e){
     var x;
     var y;
     if (e.pageX || e.pageY) { 
@@ -43,13 +48,13 @@ $(document).ready(function(){
     } 
     x -= canvas.offsetLeft;
     y -= canvas.offsetTop;
-    return {x: x, y: y};
+    return {x: x, y: y, color: color};
   }
 
-  function drawCircle(coords){
+  function drawCircle(circleData){
     ctx.beginPath();
-    ctx.arc(coords.x, coords.y, 4, 0, 2 * Math.PI, false);
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = circleData.color;
+    ctx.arc(circleData.x, circleData.y, 4, 0, 2 * Math.PI, false);
     ctx.fill();
   }
 });
