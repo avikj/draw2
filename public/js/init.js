@@ -47,7 +47,7 @@ $(document).ready(function(){
 
   function drawCircle(coords){
     ctx.beginPath();
-    ctx.arc(coords.x, coords.y, 2, 0, 2 * Math.PI, false);
+    ctx.arc(coords.x, coords.y, 4, 0, 2 * Math.PI, false);
     ctx.fillStyle = '#000000';
     ctx.fill();
   }
