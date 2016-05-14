@@ -6,10 +6,7 @@ $(document).ready(function(){
   var mouseIsDown = false;
 
   socket.on('circle', function(coords){
-    ctx.beginPath();
-    ctx.arc(coords.x, coords.y, 2, 0, 2 * Math.PI, false);
-    ctx.fillStyle = '#000000';
-    ctx.fill();
+    drawCircle(coords);
   });
 
   canvas.addEventListener('mousedown', function(event){
@@ -23,7 +20,9 @@ $(document).ready(function(){
 
   canvas.addEventListener('mousemove', function(event){
     if(mouseIsDown){
-      socket.emit('circle', fixCoords(event));
+      var fixedCoords = fixCoords(event);
+      socket.emit('circle', fixedCoords);
+      drawCircle(fixedCoords);
     }
   });
 
@@ -41,5 +40,12 @@ $(document).ready(function(){
     x -= canvas.offsetLeft;
     y -= canvas.offsetTop;
     return {x: x, y: y};
+  }
+
+  function drawCircle(coords){
+    ctx.beginPath();
+    ctx.arc(coords.x, coords.y, 2, 0, 2 * Math.PI, false);
+    ctx.fillStyle = '#000000';
+    ctx.fill();
   }
 });
