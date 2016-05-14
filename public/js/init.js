@@ -12,7 +12,8 @@ $(document).ready(function(){
   });
 
   canvas.addEventListener('mousedown', function(event){
-    socket.emit('circle', fixCoords(event));
+    var fixedCoords = fixCoords(event);
+    socket.emit('circle', fixedCoords);
     mouseIsDown = true;
     drawCircle(fixedCoords);
   });
