@@ -1,6 +1,8 @@
 $(document).ready(function(){
   var socket = io();
   var canvas = document.getElementById('drawing-canvas');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
   var ctx = canvas.getContext("2d");
 
   var mouseIsDown = false;
