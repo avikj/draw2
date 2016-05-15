@@ -9,6 +9,8 @@ var randomColor = require('randomcolor');
 var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
 var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 
+var users = {};
+
 app.use(express.static('public'));
 
 app.get('/', function(req, res){
