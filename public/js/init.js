@@ -8,7 +8,7 @@ $(document).ready(function(){
   ctx.lineWidth = CIRCLE_RAD*2;
   var color = '#000000';
   var prevCoords;
-  var mouseIsDown = false;
+  var mouseState = 0; // 0 = up, 1 = left, 2 = right
   var users = {};
 
 
@@ -20,31 +20,31 @@ $(document).ready(function(){
   });
 
   canvas.addEventListener('mousedown', function(event){
+    mouseState = Math.floor(event.button/2)+1;
     var circleData = getCircleData(event);
     socket.emit('circle', circleData);
-    mouseIsDown = true;
     draw(circleData);
     prevCoords = circleData.coords;
-  });
+  }, false);
 
   canvas.addEventListener('mouseup', function(event){
     prevCoords = null;
-    mouseIsDown = false;
-  });
+    mouseState = 0;
+  }, false);
 
   canvas.addEventListener('mouseout', function(event){
     prevCoords = null;
-    mouseIsDown = false;
-  });
+    mouseState = 0;
+  }, false);
 
   canvas.addEventListener('mousemove', function(event){
-    if(mouseIsDown){
+    if(mouseState > 0){
       var circleData = getCircleData(event);
       socket.emit('circle', circleData);
       draw(circleData);
       prevCoords = circleData.coords;
     }
-  });
+  }, false);
 
   function getCircleData(e){
     var x;
@@ -65,7 +65,8 @@ $(document).ready(function(){
         x: x, 
         y: y
       },
-      color: color
+      color: mouseState == 1 ? color : '#ffffff',
+      radius: mouseState == 1 ? CIRCLE_RAD : CIRCLE_RAD*10
     };
   }
 
@@ -73,14 +74,14 @@ $(document).ready(function(){
     if(circleData.prevCoords){
       ctx.beginPath();
       ctx.strokeStyle = circleData.color;
+      ctx.lineWidth = circleData.radius*2;
       ctx.moveTo(circleData.prevCoords.x, circleData.prevCoords.y);
       ctx.lineTo(circleData.coords.x, circleData.coords.y);
       ctx.stroke();
-    }else{
-      ctx.beginPath();
-      ctx.fillStyle = circleData.color;
-      ctx.arc(circleData.coords.x, circleData.coords.y, CIRCLE_RAD, 0, 2 * Math.PI, false);
-      ctx.fill();
     }
+    ctx.beginPath();
+    ctx.fillStyle = circleData.color;
+    ctx.arc(circleData.coords.x, circleData.coords.y, circleData.radius, 0, 2 * Math.PI, false);
+    ctx.fill();
   }
 });
