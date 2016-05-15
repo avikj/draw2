@@ -8,8 +8,7 @@ $(document).ready(function(){
   ctx.lineWidth = CIRCLE_RAD*2;
   var color = '#000000';
   var prevCoords;
-  var mouseState = 0; // 0 = up, 1 = left, 2 = right
-  var users = {};
+  var mouseIsDown = false;
 
 
   socket.on('circle', function(data){
@@ -20,7 +19,7 @@ $(document).ready(function(){
   });
 
   canvas.addEventListener('mousedown', function(event){
-    mouseState = Math.floor(event.button/2)+1;
+    mouseIsDown = true;
     var circleData = getCircleData(event);
     socket.emit('circle', circleData);
     draw(circleData);
@@ -29,16 +28,16 @@ $(document).ready(function(){
 
   canvas.addEventListener('mouseup', function(event){
     prevCoords = null;
-    mouseState = 0;
+    mouseIsDown = false;
   }, false);
 
   canvas.addEventListener('mouseout', function(event){
     prevCoords = null;
-    mouseState = 0;
+    mouseIsDown = false;
   }, false);
 
   canvas.addEventListener('mousemove', function(event){
-    if(mouseState > 0){
+    if(mouseIsDown){
       var circleData = getCircleData(event);
       socket.emit('circle', circleData);
       draw(circleData);
@@ -65,8 +64,8 @@ $(document).ready(function(){
         x: x, 
         y: y
       },
-      color: mouseState == 1 ? color : '#ffffff',
-      radius: mouseState == 1 ? CIRCLE_RAD : CIRCLE_RAD*10
+      color: e.shiftKey ? '#ffffff' : color,
+      radius: e.shiftKey ? CIRCLE_RAD*10 : CIRCLE_RAD
     };
   }
 
