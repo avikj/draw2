@@ -1,5 +1,6 @@
 var path = require('path');
 var express = require('express');
+var shortid = require('shortid');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -9,18 +10,26 @@ var randomColor = require('randomcolor');
 var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
 var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 
-var users = {};
-
 app.use(express.static('public'));
 
 app.get('/', function(req, res){
-	res.sendFile(path.join(__dirname, 'index.html'));
+	res.redirect('/'+shortid.generate());
+});
+
+app.get('/:room', function(req, res){
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 io.on('connection', function(socket){
   socket.emit('setColor', randomColor());
+
+  socket.on('room', function(room){
+    socket.join(room);
+    socket.room = room;
+  });
+
   socket.on('circle', function(circleData){
-    io.emit('circle', circleData);
+    io.sockets.in(socket.room).emit('circle', circleData);
   });
 
 });
