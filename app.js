@@ -28,7 +28,7 @@ app.get('/', function(req, res){
 app.get('/:roomId', function(req, res){ 
   Room.findOne({id: req.params.roomId}, function(error, room){
     if(error)
-      return console.error(error);
+      return res.send(error);
     if(!room){    // if a room with this id does not exist, create one and then send index.html
       var newRoom = new Room({
         id: req.params.roomId,
