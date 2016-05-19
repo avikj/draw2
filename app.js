@@ -7,6 +7,7 @@ var app = express();
 var server = http.Server(app);
 var io = require('socket.io')(server);
 var randomColor = require('randomcolor');
+var fs = require('fs');
 
 var Room = require('./models/room.js');
 
@@ -17,7 +18,12 @@ var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 var mongoPort = process.env.OPENSHIFT_MONGODB_DB_PORT || 27017;
 var mongoHost = process.env.OPENSHIFT_MONGODB_DB_HOST || '127.0.0.1';
 
-mongoose.connect('mongodb://'+mongoHost+':'+mongoPort+'/draw2');
+var secretData = JSON.parse(fs.readFileSync('secretData.json'));
+
+if(process.env.OPENSHIFT_NODEJS_IP)
+  mongoose.connect('mongodb://'+secretData.mongoUser+':'+secretData.mongoPassword+'@'+mongoHost+':'+mongoPort+'/draw2');
+else 
+  mongoose.connect('mongodb://'+mongoHost+':'+mongoPort+'/draw2');
 
 app.use(express.static('public'));
 
@@ -74,4 +80,7 @@ mongoose.connection.once('open', function(){
     console.log('Server listening on http://'+ip+':'+port);
   });
 });
+
+mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
+
 
