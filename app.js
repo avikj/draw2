@@ -1,9 +1,10 @@
 var path = require('path');
 var express = require('express');
 var shortid = require('shortid');
+
 var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var server = http.Server(app);
+var io = require('socket.io')(server);
 
 var randomColor = require('randomcolor');
 
@@ -13,7 +14,7 @@ var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 app.use(express.static('public'));
 
 app.get('/', function(req, res){
-	res.redirect('/'+shortid.generate());
+	res.redirect('/'+shortid.generate());;
 });
 
 app.get('/:room', function(req, res){
@@ -34,6 +35,6 @@ io.on('connection', function(socket){
 
 });
 
-http.listen(port, ip, function(){
+server.listen(port, ip, function(){
 	console.log('Server listening on localhost:3000');
 });
