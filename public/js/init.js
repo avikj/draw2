@@ -1,6 +1,6 @@
 $(document).ready(function(){
   var socket = io();
-  socket.emit('room', location.pathname);
+  socket.emit('room', location.pathname.substring(1));
   var canvas = document.getElementById('drawing-canvas');
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
